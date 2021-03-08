@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .border {
+            width: 1000px;
+            height: 300px;
+            border: 1px solid black;
+            position: relative;
+        }
+
+        .item:nth-child(1) {
+            margin-left: 20px;
+        }
+
+        .item {
+            float: left;
+            width: 60px;
+            height: 100%;
+            margin-right: 20px;
+            background-color: blueviolet;
+            position: relative;
+            bottom: 0;
+        }
+    </style>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+<h1>冒泡排序过程 图形化展示</h1>
+<div class="border">
+</div>
+<button id="move">开始交换</button>
+<script>
+    var item_array = [80, 55, 34, 12, 60, 20, 70, 30, 5, 92];
+
+    for (ind in item_array) {
+        var id = Number(ind) + 1;
+        var item = $('<div class="item" id="item' + id + '">' + item_array[ind] + '</div>');
+        item.css('height', item_array[ind] + '%');
+        $('.border').append(item);
+    }
+
+    // 所有交换过程队列
+    var change_queue = [];
+
+    // 数组长度
+    item_array_length = item_array.length;
+    // 冒泡排序
+    for (var i = 0; i < item_array_length; i++) {
+        for (var j = 0; j < item_array_length - i - 1; j++) {
+            if (item_array[j] > item_array[j + 1]) {
+                // 冒泡排序
+                var temp = item_array[j];
+                item_array[j] = item_array[j + 1];
+                item_array[j + 1] = temp;
+
+                // 将排序过程添加到列表中
+                var item_left = $('#item' + (j + 1));
+                var item_right = $('#item' + (j + 2));
+                change_queue.unshift([item_left, item_right]);
+
+                // 移动之后交换id
+                var item_id = item_left.attr('id');
+                item_left.attr('id', item_right.attr('id'));
+                item_right.attr('id', item_id);
+            }
+        }
+    }
+
+    $('#move').click(function () {
+        var timer = setInterval(function () {
+            item_list = change_queue.pop();
+            item_list[0].animate({left: '+=80px'}, "slow");
+            item_list[1].animate({left: '-=80px'}, "slow");
+            if (change_queue.length <= 0) {
+                clearInterval(timer);
+                alert('排序完毕!');
+            }
+        }, 600);
+    });
+
+</script>
+</body>
+</html>
